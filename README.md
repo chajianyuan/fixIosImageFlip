@@ -1,70 +1,100 @@
-# Getting Started with Create React App
+## 解决IOS上传图片翻转问题
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### 一、问题描述
 
-## Available Scripts
+ios拍照上传图片，图片会旋转展示
 
-In the project directory, you can run:
+### 二、原因
+ iPhone对拍摄的照片附加了EXIF信息（如镜头、光圈、快门、焦距、相机拍摄角度等），图片被上传后自动根据相机拍摄角度做了旋转。
+ 
+### 三、解决方案
 
-### `yarn start`
+#### 方案一、添加旋转按钮，由用户操作决定使用哪种角度的图片（每次操作旋转90度）
+起始图：
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+<img src="https://github.com/chajianyuan/picture/blob/master/1626676773014.jpg?raw=true" width="300px" />
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+##### 翻转的过程
 
-### `yarn test`
+##### 1. 修改canvas的宽高
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+<img src="https://github.com/chajianyuan/picture/blob/master/1626676783920.jpg?raw=true" width="300px" />
 
-### `yarn build`
+```
+canvas.width = height;
+canvas.height = width;
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+##### 2. 将canvas旋转90度
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+⚠️ 旋转过程中canvas的坐标轴也会跟着旋转
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+<img src="https://github.com/chajianyuan/picture/blob/master/1626676796148.jpg?raw=true" width="400px" />
 
-### `yarn eject`
+```
+ctx.rotate(angle);
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+##### 3. 将canvas移动到可视区
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+<img src="https://github.com/chajianyuan/picture/blob/master/1626676809755.jpg?raw=true" width="400px" />
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```
+ctx.drawImage(img, 0, -height);
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Learn More
+#### 方案二、 根据图像EXIF信息中的相机拍摄角度（Orientation），再旋转回来
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+优点：无需用户操作，一气呵成，无论是什么角度的照片，都能给旋转回来
+缺点：开发人员需要获取图像的EXIF信息
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 三、扩展
 
-### Code Splitting
+#### 1、旋转180度
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+<img src="https://github.com/chajianyuan/picture/blob/master/1626676825075.jpg?raw=true" width="400px" />
 
-### Analyzing the Bundle Size
+```
+canvas.width = width;
+canvas.height = height;
+ctx.rotate(angle);
+ctx.drawImage(img, -width, -height);
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+#### 2、旋转270度
 
-### Making a Progressive Web App
+<img src="https://github.com/chajianyuan/picture/blob/master/1626676833261.jpg?raw=true" width="400px" />
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```
+canvas.width = height;
+canvas.height = width;
+ctx.rotate(angle);
+ctx.drawImage(img, -width, 0);
+```
 
-### Advanced Configuration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+#### 3. 旋转90度以内的(以30度为例)
 
-### Deployment
+<img src="https://github.com/chajianyuan/picture/blob/master/1626676840224.jpg?raw=true" width="500px" />
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+<img src="https://github.com/chajianyuan/picture/blob/master/1626676848764.jpg?raw=true" width="300px" />
 
-### `yarn build` fails to minify
+```
+const x = height * Math.sin(angle) * Math.cos(angle);
+const y = height * Math.sin(angle) * Math.sin(angle);
+canvas.width = height * Math.sin(angle) + width * Math.cos(angle);
+canvas.height = height * Math.cos(angle) + width * Math.sin(angle);
+ctx.rotate(angle);
+ctx.drawImage(img, x, -y);
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+### 四、项目如何启动？
+
+```
+npm install/yarn
+
+npm start/yarn start
+```
+
