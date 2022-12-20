@@ -20,7 +20,7 @@ ios拍照上传图片，图片会旋转展示
 
 <img src="https://github.com/chajianyuan/picture/blob/master/1626676783920.jpg?raw=true" width="300px" />
 
-```
+```js
 canvas.width = height;
 canvas.height = width;
 ```
@@ -31,7 +31,7 @@ canvas.height = width;
 
 <img src="https://github.com/chajianyuan/picture/blob/master/1626676796148.jpg?raw=true" width="400px" />
 
-```
+```js
 ctx.rotate(angle);
 ```
 
@@ -39,7 +39,7 @@ ctx.rotate(angle);
 
 <img src="https://github.com/chajianyuan/picture/blob/master/1626676809755.jpg?raw=true" width="400px" />
 
-```
+```js
 ctx.drawImage(img, 0, -height);
 ```
 
@@ -55,7 +55,7 @@ ctx.drawImage(img, 0, -height);
 
 <img src="https://github.com/chajianyuan/picture/blob/master/1626676825075.jpg?raw=true" width="400px" />
 
-```
+```js
 canvas.width = width;
 canvas.height = height;
 ctx.rotate(angle);
@@ -66,7 +66,7 @@ ctx.drawImage(img, -width, -height);
 
 <img src="https://github.com/chajianyuan/picture/blob/master/1626676833261.jpg?raw=true" width="400px" />
 
-```
+```js
 canvas.width = height;
 canvas.height = width;
 ctx.rotate(angle);
@@ -80,7 +80,7 @@ ctx.drawImage(img, -width, 0);
 
 <img src="https://github.com/chajianyuan/picture/blob/master/1626676848764.jpg?raw=true" width="300px" />
 
-```
+```js
 const x = height * Math.sin(angle) * Math.cos(angle);
 const y = height * Math.sin(angle) * Math.sin(angle);
 canvas.width = height * Math.sin(angle) + width * Math.cos(angle);
@@ -92,7 +92,7 @@ ctx.drawImage(img, x, -y);
 
 ### 四、项目如何启动？
 
-```
+```js
 npm install/yarn
 
 npm start/yarn start
